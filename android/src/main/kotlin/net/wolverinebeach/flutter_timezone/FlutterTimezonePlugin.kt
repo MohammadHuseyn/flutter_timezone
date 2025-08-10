@@ -17,8 +17,7 @@ class FlutterTimezonePlugin : FlutterPlugin, MethodCallHandler {
     private lateinit var channel: MethodChannel
 
     override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(binding.binaryMessenger, "flutter_timezone")
-        channel.setMethodCallHandler(this)
+        setupMethodChannel(binding.binaryMessenger)
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
@@ -28,9 +27,7 @@ class FlutterTimezonePlugin : FlutterPlugin, MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
             "getLocalTimezone" -> result.success(getLocalTimezone())
-
             "getAvailableTimezones" -> result.success(getAvailableTimezones())
-
             else -> result.notImplemented()
         }
     }
@@ -49,5 +46,10 @@ class FlutterTimezonePlugin : FlutterPlugin, MethodCallHandler {
         } else {
             TimeZone.getAvailableIDs().toCollection(ArrayList())
         }
+    }
+
+    private fun setupMethodChannel(messenger: BinaryMessenger) {
+        channel = MethodChannel(messenger, "flutter_timezone")
+        channel.setMethodCallHandler(this)
     }
 }
